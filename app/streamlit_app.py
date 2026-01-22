@@ -42,7 +42,6 @@ def load_models():
 
 xgb_model, logreg_model = load_models()
 
-
 # ---------------------------------
 # SIDEBAR CONTROLS
 # ---------------------------------
@@ -55,29 +54,33 @@ model_choice = st.sidebar.selectbox(
 
 attention_threshold = st.sidebar.slider(
     "Minimum churn probability to consider action",
-    0.05, 0.50, 0.20, 0.01
+    0.05, 0.90, 0.20, 0.01
 )
 
 decision_threshold = st.sidebar.slider(
     "Decision threshold (policy)",
-    0.05, 0.60, 0.20, 0.01
+    0.05, 0.90, 0.20, 0.01
 )
 
 save_rate = st.sidebar.slider(
     "Retention success rate after contact",
-    0.05, 1.00, 0.35, 0.05,
-    help="Probability that a contacted customer is successfully retained"
+    0.05, 1.00, 0.35, 0.05
 )
 
 contact_cost = st.sidebar.number_input(
     "Cost to contact customer (₹)",
-    100, 5000, 800, 100
+    min_value=100,
+    value=800,
+    step=100
 )
 
 customer_value = st.sidebar.number_input(
     "Value of customer if retained (₹)",
-    1000, 20000, 2000, 500
+    min_value=1000,
+    value=2000,
+    step=500
 )
+
 
 mode = st.sidebar.radio(
     "Prediction mode",
@@ -90,6 +93,17 @@ mode = st.sidebar.radio(
 model = xgb_model if model_choice == "XGBoost" else logreg_model
 
 # ---------------------------------
+# FRIENDLY LABELS (UI ONLY)
+# ---------------------------------
+FRIENDLY_LABELS = {
+    "SeniorCitizen": "Senior Citizen",
+    "Partner": "Has Partner",
+    "Dependents": "Has Dependents",
+    "PhoneService": "Phone Service",
+    "PaperlessBilling": "Paperless Billing"
+}
+
+# ---------------------------------
 # CUSTOMER INPUT
 # ---------------------------------
 if mode == "Existing customer":
@@ -97,20 +111,27 @@ if mode == "Existing customer":
         "Customer index", 0, len(X) - 1, 0
     )
     customer = X.iloc[[idx]]
+
 else:
     st.sidebar.subheader("Customer details")
     manual = {}
+
     for col in X.columns:
+        label = FRIENDLY_LABELS.get(col, col)
+
         if X[col].nunique() == 2:
-            manual[col] = st.sidebar.selectbox(col, [0, 1])
+            choice = st.sidebar.selectbox(label, ["No", "Yes"])
+            manual[col] = 1 if choice == "Yes" else 0
         else:
             manual[col] = st.sidebar.number_input(
-                col,
+                label,
                 float(X[col].min()),
                 float(X[col].max()),
                 float(X[col].median())
             )
-    customer = pd.DataFrame([manual])
+
+    # IMPORTANT: keep column order EXACTLY the same
+    customer = pd.DataFrame([manual])[X.columns]
 
 # ---------------------------------
 # PREDICTION
@@ -152,7 +173,6 @@ if prob < attention_threshold:
         ({attention_threshold:.2%}).
         """
     )
-
 else:
     st.subheader("Business Impact")
 
@@ -192,10 +212,6 @@ else:
         fig, ax = plt.subplots(figsize=(8, 4))
         shap.plots.bar(shap_values[0], max_display=10, show=False)
         st.pyplot(fig)
-
-        st.caption(
-            "Features pushing churn probability up or down for this customer."
-        )
 
     else:
         lr = model.named_steps["model"]
