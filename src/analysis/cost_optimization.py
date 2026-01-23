@@ -3,18 +3,14 @@ import pandas as pd
 import mlflow
 from sklearn.metrics import confusion_matrix
 
-# -----------------------
-# CONFIG
-# -----------------------
-CONTACT_COST = 100     # ₹
-CHURN_LOSS = 2000      # ₹
+
+CONTACT_COST = 100     
+CHURN_LOSS = 2000      
 
 LOGREG_RUN_ID = "9d462f0b6efa4c809adef464c8879b23"
 XGB_RUN_ID = "8ce72d9bab764bfbb7f59497215f4a39"
 
-# -----------------------
 # LOAD DATA
-# -----------------------
 df = pd.read_csv("data/processed/features.csv")
 X = df.drop(columns=["Churn"])
 y = df["Churn"].values

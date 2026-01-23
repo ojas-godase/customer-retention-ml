@@ -24,13 +24,12 @@ mlflow.set_experiment("customer_churn_models")
 
 
 def train_baseline_model():
-    # Load data
     df = pd.read_csv(FEATURE_PATH)
 
     X = df.drop(columns=["Churn"])
     y = df["Churn"]
 
-    # Numerical features (original numeric columns)
+    # Numerical features 
     numerical_cols = [
         "tenure",
         "MonthlyCharges",

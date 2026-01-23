@@ -8,14 +8,12 @@ FEATURE_PATH = "data/processed/features.csv"
 def build_features(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
 
-    # Separate target
     y = df["Churn"]
     X = df.drop(columns=["Churn"])
 
     # One-hot encode categorical features
     X_encoded = pd.get_dummies(X, drop_first=True)
 
-    # Reattach target
     X_encoded["Churn"] = y.values
 
     return X_encoded

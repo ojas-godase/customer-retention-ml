@@ -4,14 +4,8 @@ import joblib
 import shap
 import matplotlib.pyplot as plt
 
-# ---------------------------------
-# CONFIG
-# ---------------------------------
 FEATURE_PATH = "data/processed/features.csv"
 
-# ---------------------------------
-# PAGE CONFIG
-# ---------------------------------
 st.set_page_config(
     page_title="Customer Churn Decision Dashboard",
     layout="wide"
@@ -19,9 +13,7 @@ st.set_page_config(
 
 st.title("Customer Churn Prediction & Decision Dashboard")
 
-# ---------------------------------
 # LOAD DATA
-# ---------------------------------
 @st.cache_data
 def load_data():
     df = pd.read_csv(FEATURE_PATH)
@@ -31,9 +23,7 @@ def load_data():
 
 df, X, y = load_data()
 
-# ---------------------------------
 # LOAD MODELS
-# ---------------------------------
 @st.cache_resource
 def load_models():
     xgb = joblib.load("models/xgboost.pkl")
@@ -42,9 +32,6 @@ def load_models():
 
 xgb_model, logreg_model = load_models()
 
-# ---------------------------------
-# SIDEBAR CONTROLS
-# ---------------------------------
 st.sidebar.header("Model & Decision Settings")
 
 model_choice = st.sidebar.selectbox(
@@ -87,14 +74,8 @@ mode = st.sidebar.radio(
     ["Existing customer", "New customer (manual input)"]
 )
 
-# ---------------------------------
-# SELECT MODEL
-# ---------------------------------
 model = xgb_model if model_choice == "XGBoost" else logreg_model
 
-# ---------------------------------
-# FRIENDLY LABELS (UI ONLY)
-# ---------------------------------
 FRIENDLY_LABELS = {
     "SeniorCitizen": "Senior Citizen",
     "Partner": "Has Partner",
@@ -103,9 +84,7 @@ FRIENDLY_LABELS = {
     "PaperlessBilling": "Paperless Billing"
 }
 
-# ---------------------------------
 # CUSTOMER INPUT
-# ---------------------------------
 if mode == "Existing customer":
     idx = st.sidebar.number_input(
         "Customer index", 0, len(X) - 1, 0
@@ -130,12 +109,8 @@ else:
                 float(X[col].median())
             )
 
-    # IMPORTANT: keep column order EXACTLY the same
     customer = pd.DataFrame([manual])[X.columns]
 
-# ---------------------------------
-# PREDICTION
-# ---------------------------------
 prob = model.predict_proba(customer)[0][1]
 
 risk = (
@@ -144,9 +119,7 @@ risk = (
     "High"
 )
 
-# ---------------------------------
 # TOP METRICS
-# ---------------------------------
 col1, col2, col3 = st.columns(3)
 col1.metric("Churn Probability", f"{prob:.2%}")
 col2.metric("Risk Level", risk)
@@ -157,9 +130,7 @@ col3.metric(
 
 st.divider()
 
-# ---------------------------------
 # DECISION & PROFIT LOGIC
-# ---------------------------------
 expected_saved_value = prob * save_rate * customer_value
 expected_profit = expected_saved_value - contact_cost
 expected_loss_no_action = prob * customer_value
@@ -200,9 +171,7 @@ else:
 
     st.divider()
 
-    # ---------------------------------
     # MODEL EXPLANATION
-    # ---------------------------------
     st.subheader("Why this prediction?")
 
     if model_choice == "XGBoost":
@@ -232,8 +201,5 @@ else:
         ax.invert_yaxis()
         st.pyplot(fig)
 
-# ---------------------------------
-# RAW FEATURES
-# ---------------------------------
 with st.expander("View customer feature values"):
     st.dataframe(customer.T, use_container_width=True)

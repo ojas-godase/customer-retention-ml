@@ -4,9 +4,6 @@ import mlflow
 import matplotlib.pyplot as plt
 from sklearn.metrics import precision_score, recall_score
 
-# -----------------------
-# CONFIG
-# -----------------------
 LOGREG_RUN_ID = "9d462f0b6efa4c809adef464c8879b23"
 XGB_RUN_ID = "8ce72d9bab764bfbb7f59497215f4a39"
 
@@ -14,9 +11,7 @@ FEATURE_PATH = "data/processed/features.csv"
 
 mlflow.set_tracking_uri("file:./mlruns")
 
-# -----------------------
 # LOAD DATA
-# -----------------------
 df = pd.read_csv(FEATURE_PATH)
 X = df.drop(columns=["Churn"])
 y = df["Churn"].values
@@ -42,9 +37,7 @@ for t in thresholds:
     xgb_precision.append(precision_score(y, xgb_preds))
     xgb_recall.append(recall_score(y, xgb_preds))
 
-# -----------------------
 # PLOT
-# -----------------------
 plt.figure(figsize=(10, 6))
 
 plt.plot(thresholds, logreg_recall, label="LogReg Recall")
@@ -64,9 +57,7 @@ plt.show()
 
 
 
-# -----------------------
 # PROFIT VS THRESHOLD
-# -----------------------
 CONTACT_COST = 100
 CHURN_LOSS = 2000
 
@@ -103,9 +94,7 @@ plt.show()
 
 
 
-# -----------------------
 # PROFIT + CONTACTED CUSTOMERS (DUAL AXIS)
-# -----------------------
 
 def compute_profit_and_contacts(probs, y, threshold):
     preds = (probs >= threshold).astype(int)

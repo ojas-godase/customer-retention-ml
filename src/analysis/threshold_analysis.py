@@ -12,7 +12,6 @@ y = df["Churn"].values
 # Load models from MLflow
 mlflow.set_tracking_uri("file:./mlruns")
 
-# 👇 Replace with your actual run IDs from MLflow UI
 LOGREG_RUN_ID = "9d462f0b6efa4c809adef464c8879b23"
 XGB_RUN_ID = "8ce72d9bab764bfbb7f59497215f4a39"
 
