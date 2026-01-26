@@ -228,33 +228,36 @@ MLflow was used during experimentation to track runs, compare models, and store 
 
 ## Project Structure
 
-The repository is organized to clearly separate concerns and support maintainability.
+The repository is organized to clearly separate experimentation, modeling, analysis, and deployment.
 
-customer_churn/
-│
-├── data/
-│ ├── raw/ # Original Kaggle dataset
-│ └── processed/ # Cleaned and feature-engineered data
-│
-├── models/
-│ ├── xgboost.pkl # Final XGBoost model
-│ └── logreg.pkl # Final Logistic Regression model
-│
-├── src/
-│ ├── data/ # Data loading and preprocessing
-│ ├── models/ # Model training scripts
-│ ├── analysis/ # Threshold, cost, SHAP, PDP analysis
-| ├── features/ # build feature columns
-│
-├── app/
-│ └── streamlit_app.py # Streamlit dashboard
-│
-├── reports/
-│ ├── plots/ # ROC, threshold, profit plots, SHAP and PDP outputs
-│
-├── requirements.txt
-├── README.md
-└── .gitignore
+- **app/**
+  - Streamlit application for interactive churn decision support
+
+- **data/**
+  - `raw/` – Original dataset
+  - `processed/` – Cleaned data and final model features
+
+- **models/**
+  - Serialized trained models (Logistic Regression, XGBoost)
+
+- **src/**
+  - `data/` – Data preprocessing pipeline
+  - `features/` – Feature construction logic
+  - `models/` – Model training scripts
+  - `analysis/` – Threshold optimization, cost analysis, SHAP and PDP analysis
+
+- **notebooks/**
+  - Exploratory data analysis (EDA)
+
+- **reports/**
+  - Generated plots and analysis outputs (precision–recall, profit curves, SHAP, PDP)
+
+- **mlruns/**
+  - MLflow experiment tracking artifacts
+
+- `export_models.py` – Model export utilities
+- `requirements.txt` – Project dependencies
+- `README.md` – Project documentation
 
 ---
 
