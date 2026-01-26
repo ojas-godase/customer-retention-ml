@@ -35,7 +35,7 @@ This project bridges the gap between:
 
 - Binary churn prediction using supervised learning
 - Comparison of Logistic Regression and XGBoost models
-- Probability-based decision thresholds
+- Cost-aware decision thresholds
 - Cost–benefit analysis for retention actions
 - Per-customer model explainability
 - Interactive Streamlit web application
@@ -180,12 +180,12 @@ The following SHAP summary plot shows the most influential features driving chur
 
 Features such as contract type, tenure, and internet service consistently dominate churn risk across customers.
 
-### 6. Key Conclusions
+### Key Conclusions
 
-- A fixed threshold of 0.5 is **suboptimal** for churn problems
-- Optimal thresholds depend on **business costs**, not accuracy alone
-- XGBoost delivers higher profit with fewer interventions
-- Threshold tuning is as important as model selection
+- A fixed probability threshold (e.g., 0.5) is rarely optimal for churn prediction and should not be treated as a default decision rule.
+- Effective churn interventions require **cost-sensitive threshold selection**, not optimization of accuracy metrics alone.
+- Under the assumed cost model, XGBoost achieves higher expected profit while requiring fewer customer interventions than Logistic Regression.
+- Decision threshold optimization is a critical component of applied machine learning systems and can be as impactful as model selection itself.
 
 ---
 
@@ -214,7 +214,11 @@ Model transparency is ensured through:
 
 This dashboard illustrates how machine learning models can support **interpretable, cost-aware decision-making** in a real-world setting.
 
-### Deployment
+## Deployment
+
+This Streamlit app is deployed at: https://customer-churn-telecom-prediction.streamlit.app/
+
+## Demo
 
 ## MLOps
 
@@ -276,3 +280,5 @@ Several extensions could further improve the system:
 These would be natural next steps in a production environment.
 
 ---
+
+## If you find this project useful or interesting, feel free to star the repository. Thank You!
